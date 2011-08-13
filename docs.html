@@ -84,7 +84,7 @@ Core.listen('updateCount',function(value){
       
       <h3 id="core.push"><code>Core.push(name, value)</code></h3>
       
-      <p>Core.js has a concept of push events. Push events make your code a lot cleaner and more flexible and allows you to interact with other widgets without them ever having to know if you exist. When you call <code>Core.push()</code> it tells all the <code>Core.listen()</code> methods to run their code. If the event never happens, such as getting tweets and Twitter is down, a "timeline" widget would just never get upated and there would be no JS errors.</p>
+      <p>Core.js has a concept of push events. Push events make your code a lot cleaner and more flexible and allows you to interact with other widgets without them ever having to know if you exist. When you call <code>Core.push()</code> it tells all the <code>Core.listen()</code> methods to run their code. If the event never happens, such as getting tweets and Twitter is down, a "timeline" widget would just never get updated and there would be no JS errors.</p>
       
       <h4>Example:</h4>
       
@@ -96,7 +96,7 @@ Core.listen('updateCount',function(value){
       
       <h3 id="core.listen"><code>Core.listen(name, callback)</code></h3>
       
-      <p>After a push is sent all <code>Core.listen()</code>s with listening for that specific push's name are notified and the callback is run. In the callback, the value of the push is returned.</p>
+      <p>After a push is sent all <code>Core.listen()</code>s that are listening for that specific push's name are notified and the callback is run. In the callback, the value of the push is returned.</p>
       
       <h4>Example:</h4>
       
