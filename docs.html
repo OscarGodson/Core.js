@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Core</title>
+    <link rel="stylesheet" href="http://yandex.st/highlightjs/6.0/styles/github.min.css"> 
+    <style>
+      @import url(http://fonts.googleapis.com/css?family=Abel);
+      body { font-family:Abel, arial, sans-serif; }
+      h1 {  }
+      .clear { clear:both; }
+      #wrapper { width:600px; margin: 0 auto 20px; }
+      pre { border:1px solid #E8E8E8; }
+      code { background:ghostWhite; }
+      .github-logo { float:right; margin:0 0 0 15px; }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <h1>Core.js</h1>
+      
+      <p>Core.js is a simple, light-weight, base layer to your JS app. It has two parts:</p>
+      <ol>
+        <li>App extensions</li>
+        <li>App pushes and updates</li>
+      </ol>
+      
+      <p>Core JS allows you to create apps that have multiple working widgets that all interact with each other without ever actually knowing about one another. You can remove any widget without another widget breaking or your browser ever throwing an error.</p>
+     
+      <h2>Quick Start Examples</h2>
+      <h3>Extensions</h3>
+      <p>Here's an example of creating a widget and then loading it.</p>
+      <pre><code class="javascript">Core.extend('widget',function(m){
+  alert(m);
+});
+      
+Core.load('widget','Hello World');</code></pre>
+      <h3>Pushes and Updates</h3>
+      <p>Here's an example of how to send a push and another item to receive it (uses jQuery just for example's sake):</p>
+      <pre><code class="javascript">var i = 0;
+$(window).click(function(){
+  Core.push('updateCount',i++);
+});
+
+Core.listen('updateCount',function(value){
+  $('.counter').empty().append(i);
+});</code></pre>
+      
+      <h2>API</h2>
+      
+      <ul>
+        <li><a href="#core.extend">Core.extend()</a></li>
+        <li><a href="#core.load">Core.load()</a></li>
+        <li><a href="#core.remove">Core.remove()</a></li>
+        <li><a href="#core.push">Core.push()</a></li>
+        <li><a href="#core.listen">Core.listen()</a></li>
+      </ul>
+      
+      <h3 id="core.extend"><code>Core.extend(name, callback)</code></h3>
+      <p><code>Core.extend()</code> creates a new widget but doesn't actually run any code until <code>Core.load()</code> is called. You can pass it parameters in the callback function so that you can set options when you use <code>Core.load()</code>.</p>
+      
+      <h4>Example:</h4>
+      <pre><code class="javascript">Core.extend('widget',function(msg){
+  alert(msg);
+});</code></pre>
+      
+      <h3 id="core.load"><code>Core.load(name, options, location)</code></h3>
+      
+      <p><code>Core.load()</code> loads and runs a widget that was defined by <code>Core.extend()</code>. The options you pass here will be run in the callback of the <code>Core.extend()</code> method. The <code>location</code> param is optional, but if you are doing <em>any</em> DOM manipulation or attaching any event listeners you should put a location. <a href="#stick-to-your-own-dom">Why you ask?</a> <em>Note: to pass multiple params use a JS object like <code>{name:'Oscar', age: '21'}</code>.</em></p>
+      
+      <p>Behind the scenes it appends a &lt;div id="widgetName&gt; element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "<code>this</code>" in the <code>Core.extend()</code> method.</p>
+      
+      <h4>Example:</h4>
+      
+      <p>This example builds from the previous example in <code>Core.extend()</code></p>
+      
+      <pre><code class="javascript">Core.load('widget','#sidebar','Hello World!');</code></pre>
+      
+      
+      <h3 id="core.remove"><code>Core.remove(name)</code></h3>
+      <p><code>Core.remove()</code> does what it says and completely removed a widget. If the widget was built correctly all pushes, listens, and bound events will stop working since all of the widget's DOM and code is completely removed.</p>
+      
+      <h4>Example:</h4>
+      <pre><code class="javascript">Core.remove('widget');</code></pre>
+      
+      <h3 id="core.push"><code>Core.push(name, value)</code></h3>
+      
+      <p>Core.js has a concept of push events. Push events make your code a lot cleaner and more flexible and allows you to interact with other widgets without them ever having to know if you exist. When you call <code>Core.push()</code> it tells all the <code>Core.listen()</code> methods to run their code. If the event never happens, such as getting tweets and Twitter is down, a "timeline" widget would just never get upated and there would be no JS errors.</p>
+      
+      <h4>Example:</h4>
+      
+      <p>jQuery is used in the following example just for illutration purposes only. jQuery is not required.</p>
+      
+      <pre><code class="javascript">$(this).find('.widgetBtn').click(function(){
+  Core.push('greet','Hi!');
+});</code></pre>
+      
+      <h3 id="core.listen"><code>Core.listen(name, callback)</code></h3>
+      
+      <p>After a push is sent all <code>Core.listen()</code>s with listening for that specific push's name are notified and the callback is run. In the callback, the value of the push is returned.</p>
+      
+      <h4>Example:</h4>
+      
+      <p>This builds off the example above in <code>Core.push()</code> and is assumed this is in some other widget.</p>
+      
+      <pre><code class="javascript">Core.listen('greet',function(val){
+  alert(val); //Would alert "Hi!"
+});</code></pre>
+      
+      <h2>Rules to Core.js</h2>
+      <p>Core.js has some design best practices and rules for it to work best.</p>
+      <h3 id="stick-to-your-own-dom">Stick to your own DOM</h3>
+      <p>Always use Core.js' DOM sandbox with <code>this</code>. Messing with another widget's DOM or even the page's DOM like the <code>&lt;body&gt;</code> doesn't only completely defeat the concept of Core.js, but also, it's just rude to the other widgets. Lastly, make sure you are careful about selecting elements too. Don't use <code>$('p')</code> in your widget code, use <code>$(this).find('p')</code></p>
+      <h3>Be original when naming widgets</h3>
+      <p>Even if you are a sole developer on a project, if you name a widget something simple like even a single character such as <code>m</code> you'll like likely trip on this later. Try to be original. If you have a twitter widget, don't call it "twitter", maybe call it "twitterizer" for example. The whole concept of Core.js is that <em>valid code should never break.</em></p>
+      <h2>Fork me!</h2>
+      <p><img class="github-logo" src="https://github.com/images/modules/footer/blacktocat.svg">As with all great scripts and applications, Core.js is open source. It's on a <a href="https://github.com/OscarGodson/Core.js">GitHub</a>, so feel free to send me pull requests!<br class="clear"></p>
+    </div>
+    
+    
+    <script src="http://yandex.st/highlightjs/6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    </script>
+  </body>
+</html>
