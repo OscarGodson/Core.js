@@ -40,7 +40,7 @@ Here's an example of how to send a push and another item to receive it (uses jQu
 - Core.push()
 - Core.listen()
 
-###`Core.extend(name, callback)`
+###Core.extend(name, callback)
 
 `Core.extend()` creates a new widget but doesn't actually run any code until `Core.load()` is called. You can pass it parameters in the callback function so that you can set options when you use `Core.load()`.
 
@@ -50,7 +50,7 @@ Here's an example of how to send a push and another item to receive it (uses jQu
       alert(msg);
     });
 
-###`Core.load(name, options, location)`
+###Core.load(name, options, location)
 
 `Core.load()` loads and runs a widget that was defined by `Core.extend()`. The options you pass here will be run in the callback of the `Core.extend()` method. The location param is optional, but if you are doing _any_ DOM manipulation or attaching any event listeners you should put a location. Why you ask?
 
@@ -64,7 +64,7 @@ This example builds from the previous example in `Core.extend()`
 
     Core.load('widget','#sidebar','Hello World!');
 
-###`Core.remove(name)`
+###Core.remove(name)
 
 `Core.remove()` does what it says and completely removed a widget. If the widget was built correctly all pushes, listens, and bound events will stop working since all of the widget's DOM and code is completely removed.
 
@@ -72,7 +72,7 @@ This example builds from the previous example in `Core.extend()`
 
     Core.remove('widget');
 
-###`Core.push(name, value)`
+###Core.push(name, value)
 
 Core.js has a concept of push events. Push events make your code a lot cleaner and more flexible and allows you to interact with other widgets without them ever having to know if you exist. When you call `Core.push()` it tells all the `Core.listen()` methods to run their code. If the event never happens, such as getting tweets and Twitter is down, a "timeline" widget would just never get updated and there would be no JS errors.
 
@@ -84,7 +84,7 @@ jQuery is used in the following example just for illutration purposes only. jQue
       Core.push('greet','Hi!');
     });
 
-###`Core.listen(name, callback)`
+###Core.listen(name, callback)
 
 After a push is sent all `Core.listen()`s that are listening for that specific push's name are notified and the callback is run. In the callback, the value of the push is returned.
 
