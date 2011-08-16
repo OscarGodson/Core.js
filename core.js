@@ -93,6 +93,7 @@ var Core = function(){
         throw new Error('Core remove() error: the extension "'+name+'" doesn\'t exist');
       }
     }
+    return this;
   }
   
   /**
@@ -118,6 +119,7 @@ var Core = function(){
         throw new Error('Core push() error: the extension "'+name+'" doesn\'t exist');
       }
     }
+    return this;
   }
   
   /**
@@ -133,6 +135,7 @@ var Core = function(){
     name = name || '';
     callback = callback || function(){};
     listeners[name] = callback;
+    return this;
   }
   
   return {
