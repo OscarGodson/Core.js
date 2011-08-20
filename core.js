@@ -17,6 +17,18 @@ var Core = function(){
   ,   listeners = {};
   
   /**
+   * @description Checks if the given object is a DOM node or not
+   * @argument {Object} o  The object to check
+   * @returns {Boolean} true or false based on if it is a DOM node or not
+   */
+  function isNode(o){
+    return (
+      typeof Node === "object" ? o instanceof Node : 
+      typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string"
+    );
+  }
+  
+  /**
    * @description 
    * Core.extend() creates a new widget but doesn't actually run any code until Core.load() is
    * called. You can pass it parameters in the callback function so that you can set options
@@ -55,6 +67,11 @@ var Core = function(){
   var load = function(name,params,sel){
     name = name || '';
     params = params || '';
+    
+    if(typeof params == 'object' && isNode(params)){
+      sel = params;
+    }
+    
     if(typeof extensions[name]  !== 'undefined'){
       if(sel){
         var widgetElement = document.createElement(settings.widgetWrapperElement);
