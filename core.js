@@ -12,7 +12,7 @@ var Core = function(){
   }
   
   //change to "true" to get error logs in your console
-  var errors = true
+  var errors = false
   ,   extensions = {}
   ,   listeners = {};
   
