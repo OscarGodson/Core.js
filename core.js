@@ -12,15 +12,11 @@ var Core = function(){
   }
   
   //change to "true" to get error logs in your console
-  var errors = false
+  var errors = true
   ,   extensions = {}
   ,   listeners = {};
   
-  /**
-   * @description Checks if the given object is a DOM node or not
-   * @argument {Object} o  The object to check
-   * @returns {Boolean} true or false based on if it is a DOM node or not
-   */
+  //Used to check if objects are actually DOM nodes
   function isNode(o){
     return (
       typeof Node === "object" ? o instanceof Node : 
@@ -36,13 +32,21 @@ var Core = function(){
    *
    * @argument {String} name  Name of your widget so that you can call .remove() and .load()
    * @argument {Function} func  The callback function to be called when .load() is invoked
+   * @argument {Function} removeFunc  The callback function to be called when .unload() or .remove()
+   *           is invoked
    * @returns {Object} the Core
    */
-  var extend = function(name,func){
+  var extend = function(name,func,removeFunc){
     name = name || '';
     func = func || function(){};
+    removeFunc = removeFunc || function(){};
     if(typeof extensions[name] == 'undefined'){
-      extensions[name] = func;
+      extensions[name] = {
+        name: name,
+        onLoad: func,
+        onUnload: removeFunc,
+        loaded:false
+      }
     }
     else{
       if(errors){
@@ -73,12 +77,20 @@ var Core = function(){
     }
     
     if(typeof extensions[name]  !== 'undefined'){
-      if(sel){
-        var widgetElement = document.createElement(settings.widgetWrapperElement);
-        widgetElement.setAttribute('id',settings.prefixOnWidgetId+name);
-        sel.appendChild(widgetElement);
+      if(extensions[name].loaded == false){
+        if(sel){
+          var widgetElement = document.createElement(settings.widgetWrapperElement);
+          widgetElement.setAttribute('id',settings.prefixOnWidgetId+name);
+          sel.appendChild(widgetElement);
+        }
+        extensions[name].loaded = true;
+        extensions[name].onLoad.call(widgetElement,params); 
       }
-      extensions[name].call(widgetElement,params);
+      else{
+        if(errors){
+          throw new Error('Core load() error: the extension "'+name+'" is already loaded');
+        }
+      }
     }
     else{
       if(errors){
@@ -95,19 +107,49 @@ var Core = function(){
    * and code is completely removed.
    *
    * @param {String} name  The name of the extension you want to remove
+   * @param {String}{Object} params  Params to be given to the 3rd param of extend upon removal
    * @returns {Object} the Core
    */
-  var remove = function(name){
+  var remove = function(name,params){
     name = name || '';
+    params = params || '';
     if(typeof extensions[name] !== 'undefined'){
       var el = document.getElementById(settings.prefixOnWidgetId+name)
       ,   elParent = el.parentNode;
       elParent.removeChild(el);
+      extensions[name].onUnload.call(el,params);
       delete extensions[name];
     }
     else{
       if(errors){
         throw new Error('Core remove() error: the extension "'+name+'" doesn\'t exist');
+      }
+    }
+  }
+  
+  /**
+   * @description
+   * Core.unload() "unloads" a widget. This means that you can then recall it with Core.load().
+   * If you use Core.remove() you won't be able to call it back because everything is removed.
+   * Core.unload() will call remove, so anything a widget had as the 3rd param in the .extend()
+   * method will be run and everything else will be removed as well.
+   * 
+   * @param {String} name  The name of the extension you want to unload
+   * @param {String}{Object} params  Params to be given to the 3rd param of extend upon removal
+   * @returns {Object} the Core
+   */
+  var unload = function(name,params){
+    name = name || '';
+    params = params || '';
+    if(typeof extensions[name] !== 'undefined'){
+      var temp = extensions[name];
+      temp.loaded = false;
+      remove(name,params);
+      extensions[name] = temp;
+    }
+    else{
+      if(errors){
+        throw new Error('Core unload() error: the extension "'+name+'" doesn\'t exist');
       }
     }
     return this;
@@ -136,7 +178,6 @@ var Core = function(){
         throw new Error('Core push() error: the extension "'+name+'" doesn\'t exist');
       }
     }
-    return this;
   }
   
   /**
@@ -152,13 +193,13 @@ var Core = function(){
     name = name || '';
     callback = callback || function(){};
     listeners[name] = callback;
-    return this;
   }
   
   return {
     extend:extend,
     load:load,
     remove:remove,
+    unload:unload,
     push:push,
     listen:listen
   }
