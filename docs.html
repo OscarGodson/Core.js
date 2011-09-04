@@ -50,24 +50,29 @@ Core.listen('updateCount',function(value){
       <ul>
         <li><a href="#core.extend">Core.extend()</a></li>
         <li><a href="#core.load">Core.load()</a></li>
+        <li><a href="#core.unload">Core.unload()</a></li>
         <li><a href="#core.remove">Core.remove()</a></li>
         <li><a href="#core.push">Core.push()</a></li>
         <li><a href="#core.listen">Core.listen()</a></li>
       </ul>
       
-      <h3 id="core.extend"><code>Core.extend(name, callback)</code></h3>
-      <p><code>Core.extend()</code> creates a new widget but doesn't actually run any code until <code>Core.load()</code> is called. You can pass it parameters in the callback function so that you can set options when you use <code>Core.load()</code>.</p>
+      <h3 id="core.extend"><code>Core.extend(name, onload, onunload)</code></h3>
+      <p><code>Core.extend()</code> creates a new widget but doesn't actually run any code until <code>Core.load()</code> is called. You can pass it parameters in the callback functions so that you can set options when you use <code>Core.load()</code>. The first <code>onload</code> callback is run when <code>Core.load()</code> is run and <code>onunload</code> on <code>Core.unload()</code> <em>or</em> <code>Core.remove()</code>.</p>
+      
+      <p>The unload callback is specifically for unbinding and reverting things back in the case you need (although you should try your hardest to never do this) bind an event outside your extension or modify the window or document. For example, maybe you set a click handler to the body, onunload you could unbind that.</p>
       
       <h4>Example:</h4>
-      <pre><code class="javascript">Core.extend('widget',function(msg){
-  alert(msg);
+      <pre><code class="javascript">Core.extend('widget',function(hello){
+  alert(hello);
+}, function(goodbye){
+  alert(goodbye)
 });</code></pre>
       
       <h3 id="core.load"><code>Core.load(name, options, location)</code></h3>
       
       <p><code>Core.load()</code> loads and runs a widget that was defined by <code>Core.extend()</code>. The options you pass here will be run in the callback of the <code>Core.extend()</code> method. The <code>location</code> param is optional, but if you are doing <em>any</em> DOM manipulation or attaching any event listeners you should put a location. <a href="#stick-to-your-own-dom">Why you ask?</a> <em>Note: to pass multiple params use a JS object like <code>{name:'Oscar', age: '21'}</code>.</em></p>
       
-      <p>Behind the scenes it appends a &lt;div id="widgetName&gt; element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "<code>this</code>" in the <code>Core.extend()</code> method.</p>
+      <p>Behind the scenes it appends a &lt;div id="core-widgetName"&gt; element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "<code>this</code>" in the <code>Core.extend()</code> method.</p>
       
       <h4>Example:</h4>
       
@@ -75,6 +80,11 @@ Core.listen('updateCount',function(value){
       
       <pre><code class="javascript">Core.load('widget','#sidebar','Hello World!');</code></pre>
       
+      <h3 id="core.unload"><code>Core.unload(name)</code></h3>
+      <p>Unlike the <code>Core.remove()</code> method, <code>Core.unload()</code> just unloads the widget which then lets you load it again with <code>Code.load()</code>. All events, pushes, and listens will stop working since the DOM for this extension will be removed.</p>
+      
+      <h4>Example:</h4>
+      <pre><code class="javascript">Core.unload('widget');</code></pre>
       
       <h3 id="core.remove"><code>Core.remove(name)</code></h3>
       <p><code>Core.remove()</code> does what it says and completely removed a widget. If the widget was built correctly all pushes, listens, and bound events will stop working since all of the widget's DOM and code is completely removed.</p>
@@ -110,6 +120,8 @@ Core.listen('updateCount',function(value){
       <p>Core.js has some design best practices and rules for it to work best.</p>
       <h3 id="stick-to-your-own-dom">Stick to your own DOM</h3>
       <p>Always use Core.js' DOM sandbox with <code>this</code>. Messing with another widget's DOM or even the page's DOM like the <code>&lt;body&gt;</code> doesn't only completely defeat the concept of Core.js, but also, it's just rude to the other widgets. Lastly, make sure you are careful about selecting elements too. Don't use <code>$('p')</code> in your widget code, use <code>$(this).find('p')</code></p>
+      <h3 id="use-classes">Use classes</h3>
+      <p>Because you don't know how other developers might use your extenion you should only use classes and never IDs. If they load two extensions many other scripts might break and CSS rules might also start to fail.</p>
       <h3>Be original when naming widgets</h3>
       <p>Even if you are a sole developer on a project, if you name a widget something simple like even a single character such as <code>m</code> you'll like likely trip on this later. Try to be original. If you have a twitter widget, don't call it "twitter", maybe call it "twitterizer" for example. The whole concept of Core.js is that <em>valid code should never break.</em></p>
       <h2>Fork me!</h2>
