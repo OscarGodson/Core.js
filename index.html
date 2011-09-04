@@ -24,7 +24,7 @@
         <li>App pushes and updates</li>
       </ol>
       
-      <p>Core JS allows you to create apps that have multiple working widgets that all interact with each other without ever actually knowing about one another. You can remove any widget without another widget breaking or your browser ever throwing an error.</p>
+      <p>Core.js allows you to create apps that have multiple working widgets that all interact with each other without ever actually knowing about one another. You can remove any widget without another widget breaking or your browser ever throwing an error.</p>
      
       <h2>Quick Start Examples</h2>
       <h3>Extensions</h3>
@@ -72,7 +72,7 @@ Core.listen('updateCount',function(value){
       
       <p><code>Core.load()</code> loads and runs a widget that was defined by <code>Core.extend()</code>. The options you pass here will be run in the callback of the <code>Core.extend()</code> method. The <code>location</code> param is optional, but if you are doing <em>any</em> DOM manipulation or attaching any event listeners you should put a location. <a href="#stick-to-your-own-dom">Why you ask?</a> <em>Note: to pass multiple params use a JS object like <code>{name:'Oscar', age: '21'}</code>.</em></p>
       
-      <p>Behind the scenes it appends a &lt;div id="core-widgetName"&gt; element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "<code>this</code>" in the <code>Core.extend()</code> method.</p>
+      <p>Behind the scenes it appends a <code>&lt;div id="core-widgetName"&gt;</code> element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "<code>this</code>" in the <code>Core.extend()</code> method.</p>
       
       <h4>Example:</h4>
       
