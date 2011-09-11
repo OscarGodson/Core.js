@@ -2,27 +2,38 @@
 <html>
   <head>
     <title>Core.js</title>
-    <link rel="stylesheet" href="http://yandex.st/highlightjs/6.0/styles/github.min.css"> 
+    <link rel="stylesheet" href="http://yandex.st/highlightjs/6.0/styles/ir_black.min.css"> 
     <style>
       @import url(http://fonts.googleapis.com/css?family=Abel);
-      body { font-family:Abel, arial, sans-serif; }
-      h1 {  }
       .clear { clear:both; }
+      body {
+        font-family:Abel, arial, sans-serif;
+        color:#F0F0F0;
+        text-shadow:#000000 0 2px 0;
+        background:url(bg.png);
+      }
+      a { color:#a8ff60; }
+      h1 { font-size:60px; line-height:20px; }
+      #tagline { font-size:20px; margin:0 0 30px 0; font-weight:normal; }
       #wrapper { width:600px; margin: 0 auto 20px; }
-      pre { border:1px solid #E8E8E8; }
-      code { background:ghostWhite; }
+      pre { border:1px solid #37352E; border-radius:5px; box-shadow:#1B1B1B 0 0 5px; }
+      code { }
+      h2 { margin:35px 0 0 0; }
+      h3 code { margin:35px 0 0 0; display:block; }
+      pre code { background:rgba(0,0,0,0.25); line-height:1.7em; }
       .github-logo { float:right; margin:0 0 0 15px; }
+      aside { background:rgba(0,0,0,0.25); border:1px solid #37352E; border-radius:3px; box-shadow:#1B1B1B 0 0 5px; position:fixed; top:0; left:10px; padding:10px 40px; }
+      aside h4 { margin:0; }
+      aside ul { padding:0; margin:0 0 15px 0; list-style:none; font-size:14px; }
+      aside li { padding:3px; }
+      p { color:#D1CAAE; }
     </style>
   </head>
   <body>
     <div id="wrapper">
       <h1>Core.js</h1>
       
-      <p>Core.js is a simple, light-weight, base layer to your JS app. It has two parts:</p>
-      <ol>
-        <li>App extensions</li>
-        <li>App pushes and updates</li>
-      </ol>
+      <h2 id="tagline">A simple, lightweight, base layer to your client-side JavaScript app</h2>
       
       <p>Core.js allows you to create apps that have multiple working widgets that all interact with each other without ever actually knowing about one another. You can remove any widget without another widget breaking or your browser ever throwing an error.</p>
      
@@ -34,7 +45,7 @@
 });
       
 Core.load('widget','Hello World');</code></pre>
-      <h3>Pushes and Updates</h3>
+      <h3>Push Events</h3>
       <p>Here's an example of how to send a push and another item to receive it (uses jQuery just for example's sake):</p>
       <pre><code class="javascript">var i = 0;
 $(window).click(function(){
@@ -46,15 +57,6 @@ Core.listen('updateCount',function(value){
 });</code></pre>
       
       <h2>API</h2>
-      
-      <ul>
-        <li><a href="#core.extend">Core.extend()</a></li>
-        <li><a href="#core.load">Core.load()</a></li>
-        <li><a href="#core.unload">Core.unload()</a></li>
-        <li><a href="#core.remove">Core.remove()</a></li>
-        <li><a href="#core.push">Core.push()</a></li>
-        <li><a href="#core.listen">Core.listen()</a></li>
-      </ul>
       
       <h3 id="core.extend"><code>Core.extend(name, onload, onunload)</code></h3>
       <p><code>Core.extend()</code> creates a new widget but doesn't actually run any code until <code>Core.load()</code> is called. You can pass it parameters in the callback functions so that you can set options when you use <code>Core.load()</code>. The first <code>onload</code> callback is run when <code>Core.load()</code> is run and <code>onunload</code> on <code>Core.unload()</code> <em>or</em> <code>Core.remove()</code>.</p>
@@ -72,7 +74,7 @@ Core.listen('updateCount',function(value){
       
       <p><code>Core.load()</code> loads and runs a widget that was defined by <code>Core.extend()</code>. The options you pass here will be run in the callback of the <code>Core.extend()</code> method. The <code>location</code> param is optional, but if you are doing <em>any</em> DOM manipulation or attaching any event listeners you should put a location. <a href="#stick-to-your-own-dom">Why you ask?</a> <em>Note: to pass multiple params use a JS object like <code>{name:'Oscar', age: '21'}</code>.</em></p>
       
-      <p>Behind the scenes it appends a <code>&lt;div id="core-widgetName"&gt;</code> element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "<code>this</code>" in the <code>Core.extend()</code> method.</p>
+      <p>Behind the scenes it appends a &lt;div id="core-widgetName"&gt; element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "<code>this</code>" in the <code>Core.extend()</code> method.</p>
       
       <h4>Example:</h4>
       
@@ -128,9 +130,29 @@ Core.listen('updateCount',function(value){
       <p><img class="github-logo" src="https://github.com/images/modules/footer/blacktocat.svg">As with all great scripts and applications, Core.js is open source. It's on a <a href="https://github.com/OscarGodson/Core.js">GitHub</a>, so feel free to send me pull requests!<br class="clear"></p>
     </div>
     
+    <aside id="nav">
+      <h3>API</h3>
+      <nav>
+        <h4>Extensions</h4>
+        <ul>
+          <li><a href="#core.extend">.extend()</a></li>
+          <li><a href="#core.load">.load()</a></li>
+          <li><a href="#core.unload">.unload()</a></li>
+          <li><a href="#core.remove">.remove()</a></li>
+        </ul>
+        <h4>Push Events</h4>
+        <ul>
+          <li><a href="#core.push">.push()</a></li>
+          <li><a href="#core.listen">.listen()</a></li>
+        </ul>
+      </nav>
+    </aside>
     
     <script src="http://yandex.st/highlightjs/6.0/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
+    <script>
+      hljs.initHighlightingOnLoad();
+      document.getElementById('nav').style.height = window.innerHeight+'px  ';
     </script>
   </body>
+</html>body>
 </html>
