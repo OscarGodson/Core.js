@@ -13,24 +13,28 @@ Core JS allows you to create apps that have multiple working widgets that all in
 
 Here's an example of creating a widget and then loading it.
 
-    Core.extend('widget',function(m){
-      alert(m);
-    });
-          
-    Core.load('widget','Hello World');
+```js
+Core.extend('widget',function(m){
+  alert(m);
+});
+      
+Core.load('widget','Hello World');
+```
 
 ### Pushes and Updates
 
 Here's an example of how to send a push and another item to receive it (uses jQuery just for example's sake):
 
-    var i = 0;
-    $(window).click(function(){
-      Core.push('updateCount',i++);
-    });
-    
-    Core.listen('updateCount',function(value){
-      $('.counter').empty().append(i);
-    });
+```js
+var i = 0;
+$(window).click(function(){
+  Core.push('updateCount',i++);
+});
+
+Core.listen('updateCount',function(value){
+  $('.counter').empty().append(i);
+});
+```
 
 ## API
 
@@ -49,23 +53,27 @@ The unload callback is specifically for unbinding and reverting things back in t
 
 #### Example:
 
-    Core.extend('widget',function(hello){
-      alert(hello);
-    }, function(goodbye){
-      alert(goodbye)
-    });
+```js
+Core.extend('widget',function(hello){
+  alert(hello);
+}, function(goodbye){
+  alert(goodbye)
+});
+```
 
 ### `Core.load(name, options, location)`
 
 `Core.load()` loads and runs a widget that was defined by `Core.extend()`. The options you pass here will be run in the callback of the `Core.extend()` method. The `location` param is optional, but if you are doing *any* DOM manipulation or attaching any event listeners you should put a location. [Why you ask?][7] *Note: to pass multiple params use a JS object like `{name:'Oscar', age: '21'}`.*
 
-Behind the scenes it appends a <div id="core-widgetName"> element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "`this`" in the `Core.extend()` method.
+Behind the scenes it appends a `<div id="core-widgetName">` element in the location you specified with the ID of the widget based on it's name. This element can be accessed with "`this`" in the `Core.extend()` method.
 
 #### Example:
 
 This example builds from the previous example in `Core.extend()`
 
-    Core.load('widget','#sidebar','Hello World!');
+```js
+Core.load('widget','Hello World!','#sidebar');
+```
 
 ### `Core.unload(name)`
 
@@ -73,7 +81,9 @@ Unlike the `Core.remove()` method, `Core.unload()` just unloads the widget which
 
 #### Example:
 
-    Core.unload('widget');
+```js
+Core.unload('widget');
+```
 
 ### `Core.remove(name)`
 
@@ -81,7 +91,9 @@ Unlike the `Core.remove()` method, `Core.unload()` just unloads the widget which
 
 #### Example:
 
-    Core.remove('widget');
+```js
+Core.remove('widget');
+```
 
 ### `Core.push(name, value)`
 
@@ -91,9 +103,11 @@ Core.js has a concept of push events. Push events make your code a lot cleaner a
 
 jQuery is used in the following example just for illutration purposes only. jQuery is not required.
 
-    $(this).find('.widgetBtn').click(function(){
-      Core.push('greet','Hi!');
-    });
+```js
+$(this).find('.widgetBtn').click(function(){
+  Core.push('greet','Hi!');
+});
+```
 
 ### `Core.listen(name, callback)`
 
@@ -103,9 +117,11 @@ After a push is sent all `Core.listen()`s that are listening for that specific p
 
 This builds off the example above in `Core.push()` and is assumed this is in some other widget.
 
-    Core.listen('greet',function(val){
-      alert(val); //Would alert "Hi!"
-    });
+```js
+Core.listen('greet',function(val){
+  alert(val); //Would alert "Hi!"
+});
+```
 
 ## Rules to Core.js
 
